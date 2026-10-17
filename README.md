@@ -3,8 +3,12 @@
 - configured tailwind css 
 # 
 - Login/sign up
-   - sign in /sign up form
+   - routing
+   - sign in  form(login)
+   - sign up form (register)
    - redirect to Browse Page
+   - form validation
+   - useRef
 
 - Browse(after authenticatio)
    - header
