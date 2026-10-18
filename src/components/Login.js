@@ -1,21 +1,95 @@
 import { useRef, useState } from "react";
 import Header from "./Header";
 import { validData } from "../utils/validate";
+import { createUserWithEmailAndPassword , signInWithEmailAndPassword} from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+ import {  updateProfile } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login=()=>
 {
-
+    const dispatch = useDispatch();
     const[signIn , setsignIn] = useState(true);
     const email = useRef(null);
     const password = useRef(null);
+    const name =  useRef(null);
     const [error, seterror] = useState(null);
+    const navigate = useNavigate();
     const onHandle = ()=>
     {
         setsignIn(!signIn);
     }
-    const onValid=()=>{
+    const onValid=()=>
+        {
       const msg =  validData(email.current.value,password.current.value);
       seterror(msg);
+      if(msg) return ;
+        //sign in or sign up
+        //sign up logic
+       if(!signIn)
+       {
+        createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+             .then((userCredential) => {
+              // Signed up 
+               const user = userCredential.user;
+                updateProfile(user, {
+                   displayName: name.current.value,
+                 photoURL: "./netflix-profile-pictures.jpg"
+                 })
+                 .then(() => {
+                    const  {uid,email,password,displayName ,photoURL} = auth.currentUser;
+                    dispatch(addUser(
+                  {   uid:uid
+                     ,email:email 
+                     , password:password
+                     ,displayName:displayName,
+                     photoURL:photoURL}
+                    ));
+
+             
+               }).catch((error) => {
+                     seterror(error.Code +error.Message)
+                });
+                console.log(user);
+             })
+
+           .catch((error) => {
+           const errorCode = error.code;
+            const errorMessage = error.message;
+            seterror(errorCode+ "-"+ errorMessage)
+           
+       })
+
+
+      
+    }     
+       //sign in logic
+       else{
+signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    console.log(user);
+    const  {uid,email,password,displayName ,photoURL}= user;
+     dispatch(addUser(
+                  {   uid:uid
+                     ,email:email 
+                     , password:password
+                     ,displayName:displayName,
+                     photoURL:photoURL}
+                    ));
+     navigate("/browse");
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+     seterror(errorCode+ "-"+ errorMessage)
+  });
+
+       }
+      
         
     }
     return(
@@ -28,7 +102,11 @@ const Login=()=>
                 {
                 signIn ?" Sign In" : "Sign Up"
                 }</h1>
-                {!signIn&& <input className="p-4 my-3 w-full"  type="text" placeholder="enter name"/>}
+
+                {!signIn&&
+                 <input  ref={name} className="p-4 my-3 w-full"  type="text"
+                  placeholder="enter name"/>}
+
                  <input 
                  ref={email}
                  className="p-4  bg-slate-300 my-3 w-full"  type="text" placeholder="enter email"/>
