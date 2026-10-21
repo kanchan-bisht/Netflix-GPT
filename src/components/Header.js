@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import {  onAuthStateChanged } from "firebase/auth";
  import { addUser,removeUser } from "../utils/userSlice";
  import { useEffect } from "react";
+ import { LOGO } from "../utils/constants";
 
 
 const Header = () => {
@@ -48,8 +49,7 @@ const navigate = useNavigate();
   return (
     <div className="absolute top-0 left-0 z-50 flex w-full items-center justify-between bg-gradient-to-b from-black/90 to-transparent px-4 py-3 sm:px-10">
       <img
-        src="https://occ.a.nflxso.net/dnmt/api/v6/iL4oJVDYZ8KLSrJ6eG2OwtghbfQ/AAAAAVIENVPMEM3Kn4hVzJseX4N8xPjtBDIpwuFDucWksdxQZ8Ss6Xf8U_vt7ThYYfRmzq0x1CS3nOwTGyVrgADvwfB_tPiK_liS2RjvI40RJSzbKRk-o8b3nCxHfCCnBsyB2XBB9_vRoSmN.svg"
-        alt="Netflix logo"
+        src={LOGO}
         className="w-60 cursor-pointer sm:w-40"
       />
 

@@ -11,6 +11,8 @@
 - create signup user accouunt in firebase
 - Implement sign in user api
 - created our user store with userslice
+- implement sign out 
+- Update profile
 # 
 - Login/sign up
    - sign in  form(login)
